@@ -17,4 +17,4 @@ class Model(BaseMLModel):
 
 if __name__ == '__main__':
     model = Model()
-    print("works")
+    print("works for me as well")
