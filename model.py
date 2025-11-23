@@ -1,19 +1,20 @@
-from base_class import BaseModel
+from base_class import BaseMLModel
 import pandas as pd
 import numpy as np
 
-class Model(BaseModel):
-    def __init__(self, config):
-        super().__init__(config)
+class Model(BaseMLModel):
+    def __init__(self):
+        self.config = {
+            'data_path': 'train_df.csv'
+        }
         self.model = None
     
-    def fit(self):
-        df = pd.read_csv(self.config['data_path'])
-        print(df.head())
+    def fit(self, X, y):
+        return self
 
-if '__name__' == '__main__':
-    config = {
-        'data_path': 'train_df.csv'
-    }
-    model = Model(config)
-    model.fit()
+    def predict(self, X):
+        return np.array([])
+
+if __name__ == '__main__':
+    model = Model()
+    print("works")
