@@ -1,7 +1,11 @@
 # ML-CaseStudy
 
 # Task For Siddharth
--> Create separate branch
+
+1.Preparatory Work - Checked out some data statistics to get an idea on how it looks like
+Result - A small change in Area is very high compared to a change in Compactness
+Conclusion - normalised the scale of the data. Implemented Min Max Scaling.
+
 -> Implement own version for fit()
 ## Add your test results here
 
