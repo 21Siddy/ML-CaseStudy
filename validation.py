@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from model import Model
+import os
 
 # --- Metric Helper Functions (No Scikit-Learn allowed) ---
 
@@ -44,22 +45,45 @@ def main():
     print("--- STARTING VALIDATION RUN ---")
     
     # 1. Load Data
-    df = pd.read_csv('train_df.csv')
+    # NOTE: Ensure this filename matches your actual csv file
+    filename = 'train_df.csv' 
+
+    print(f"Loading {filename}...")
+    df = pd.read_csv(filename)
     
     # Separate Features and Target
     # Drop ID (col 0) and num_errors (target, last col)
-    # Assuming 'ID' is the first column and 'num_errors' is the target
     X = df.drop(columns=['ID', 'num_errors']).values
     y = df['num_errors'].values
     
-    # 2. Shuffle and Split (80% Train, 20% Validation)
-    np.random.seed(42) # Fixed seed for reproducibility
-    indices = np.random.permutation(len(X))
-    split_idx = int(len(X) * 0.8)
+    # 2. Stratified Shuffle and Split (80% Train, 20% Validation)
+    # This ensures rare classes (1, 2, 3) are represented equally in both sets
+    print("Performing Stratified Split...")
+    np.random.seed(42)
+    train_indices = []
+    val_indices = []
     
-    train_idx, val_idx = indices[:split_idx], indices[split_idx:]
-    X_train, y_train = X[train_idx], y[train_idx]
-    X_val, y_val = X[val_idx], y[val_idx]
+    classes = np.unique(y)
+    for c in classes:
+        # Get all indices for this specific class
+        c_idx = np.where(y == c)[0]
+        np.random.shuffle(c_idx)
+        
+        # Split this class 80/20
+        n_train_c = int(len(c_idx) * 0.8)
+        
+        train_indices.extend(c_idx[:n_train_c])
+        val_indices.extend(c_idx[n_train_c:])
+        
+    # Convert to numpy array and shuffle final combined indices 
+    # to break class ordering (important for some models, though GNB doesn't care)
+    train_indices = np.array(train_indices)
+    val_indices = np.array(val_indices)
+    np.random.shuffle(train_indices)
+    np.random.shuffle(val_indices)
+    
+    X_train, y_train = X[train_indices], y[train_indices]
+    X_val, y_val = X[val_indices], y[val_indices]
     
     print(f"Training Set: {X_train.shape[0]} samples")
     print(f"Validation Set: {X_val.shape[0]} samples")

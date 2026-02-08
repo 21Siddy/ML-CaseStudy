@@ -26,8 +26,8 @@ def main():
 
     # 5. Save
     submission_df['Predicted'] = predictions
-    submission_df.to_csv('submission_new_2.csv', index=False)
-    print("Success! 'submission_new_2.csv' has been updated.")
+    submission_df.to_csv('submission.csv', index=False)
+    print("Success! 'submission.csv' has been updated.")
 
 if __name__ == "__main__":
     main()
